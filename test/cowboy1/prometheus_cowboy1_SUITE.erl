@@ -289,7 +289,7 @@ authorize(#{headers := Headers}) ->
     "Basic abba" ->
       false;
     "Bearer abba" ->
-      false;    
+      false;
     <<"Basic cXdlOnF3ZQ==">> ->
       false;
     <<"Basic abba">> ->
