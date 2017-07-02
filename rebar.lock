@@ -1,10 +1,10 @@
 {"1.1.0",
 [{<<"accept">>,{pkg,<<"accept">>,<<"0.3.3">>},1},
  {<<"prometheus">>,{pkg,<<"prometheus">>,<<"3.3.1">>},1},
- {<<"prometheus_httpd">>,{pkg,<<"prometheus_httpd">>,<<"2.0.1">>},0}]}.
+ {<<"prometheus_httpd">>,{pkg,<<"prometheus_httpd">>,<<"2.1.0">>},0}]}.
 [
 {pkg_hash,[
  {<<"accept">>, <<"548EBB6FB2E8B0D170E75BB6123AEA6CEECB0189BB1231EEADF52EAC08384A97">>},
  {<<"prometheus">>, <<"BC680E9D7AA53CBC1B554093968718D25BA264CD936840B24278E1CB77B97225">>},
- {<<"prometheus_httpd">>, <<"BB979C4AA50E5F156EF32F4852A8BFAFCBECBFE066FADA1CF4058894EF05D690">>}]}
+ {<<"prometheus_httpd">>, <<"7821D6223E53492CF3D283D28C87A065BB71A3776CE7BC16D391F83413F4CEDB">>}]}
 ].
