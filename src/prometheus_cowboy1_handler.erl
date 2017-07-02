@@ -15,8 +15,8 @@ init(_Transport, Request, Opts) ->
 
 handle(Request0, State) ->
   {Method, Request} = cowboy_req:method(Request0),
-  Request1 = gen_response(Method, Request),
-  {ok, Request1, State}.
+  {ok, Response} = gen_response(Method, Request),
+  {ok, Response, State}.
 
 terminate(_Reason, _Request, _State) ->
   ok.
@@ -26,7 +26,7 @@ terminate(_Reason, _Request, _State) ->
 %% ===================================================================
 
 gen_response(<<"GET">>, Request) ->
-  {Registry0, _} = cowboy_req:binding(registry, Request, default),
+  {Registry0, _} = cowboy_req:binding(registry, Request, <<"default">>),
   case prometheus_registry:exists(Registry0) of
     false ->
       cowboy_req:reply(404, [], <<"Unknown Registry">>, Request);
