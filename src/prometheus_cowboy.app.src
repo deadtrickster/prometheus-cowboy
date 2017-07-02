@@ -1,0 +1,15 @@
+{application, prometheus_cowboy,
+ [{description, ""},
+  {vsn, "0.0.1"},
+  {registered, []},
+  {applications,
+   [kernel,
+    stdlib
+   ]},
+  {env,[]},
+  {modules, []},
+
+  {maintainers, ["Ilya Khaprov"]},
+  {licenses, ["MIT"]},
+  {links, [{"Github", "https://github.com/deadtrickster/prometheus_cowboy"}]}
+ ]}.
