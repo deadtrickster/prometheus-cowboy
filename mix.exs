@@ -1,9 +1,9 @@
-defmodule Prometheus-cowboy.Mixfile do
+defmodule PrometheusCowboy.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :prometheus_cowboy
-     version: "1.1.0",
+    [app: :prometheus_cowboy,
+     version: "0.0.1",
      deps: deps(),
      description: description(),
      package: package()]
@@ -11,7 +11,7 @@ defmodule Prometheus-cowboy.Mixfile do
 
   defp description do
     """
-    prometheus_cowboy
+    Prometheus instrumenters and handlers for Cowboy 1&2.
     """
   end
 
@@ -19,7 +19,7 @@ defmodule Prometheus-cowboy.Mixfile do
     [maintainers: ["Ilya Khaprov"],
      licenses: ["MIT"],
      links: %{"GitHub" => "https://github.com/deadtrickster/prometheus_cowboy"},
-     files: ["priv", "src", "README.md", "rebar.config"]]
+     files: ["priv", "src", "lib", "README.md", "rebar.config"]]
   end
 
   defp deps do

@@ -1,4 +1,4 @@
-defmodule Prometheus-cowboy do
+defmodule PrometheusCowboy do
 
   @moduledoc """
 
