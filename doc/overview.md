@@ -9,6 +9,31 @@
 [![Build Status][Travis badge]][Travis link]
 [![Coverage Status][Coveralls badge]][Coveralls link]
 
+## Handlers
+
+Cowboy 1:
+
+<pre lang="erlang">
+Routes = [
+          {'_', [
+                 {"/metrics/[:registry]", prometheus_cowboy1_handler, []},
+                 {"/", toppage_handler, []}
+                ]}
+         ],
+</pre>
+
+Cowboy 2:
+
+<pre lang="erlang">
+Routes = [
+          {'_', [
+                 {"/metrics/[:registry]", prometheus_cowboy2_handler, []},
+                 {"/", toppage_handler, []}
+                ]}
+         ],
+</pre>
+
+
 ## Contributing
 
 Section order:
