@@ -1,3 +1,4 @@
 %% encoding: UTF-8
 {application,prometheus_cowboy}.
-{modules,[]}.
+{modules,[prometheus_cowboy,prometheus_cowboy1_handler,
+          prometheus_cowboy2_handler]}.

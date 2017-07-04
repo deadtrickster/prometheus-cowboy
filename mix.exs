@@ -3,7 +3,7 @@ defmodule PrometheusCowboy.Mixfile do
 
   def project do
     [app: :prometheus_cowboy,
-     version: "0.0.1",
+     version: "0.0.2",
      deps: deps(),
      description: description(),
      package: package()]

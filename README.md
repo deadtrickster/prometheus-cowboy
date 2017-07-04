@@ -4,45 +4,12 @@
 
 Copyright (c) 2017 Ilya Khaprov <<i.khaprov@gmail.com>>.
 
-__Version:__ 0.0.1
+__Version:__ 0.0.2
 
 [![Hex.pm][Hex badge]][Hex link]
 [![Hex.pm Downloads][Hex downloads badge]][Hex link]
 [![Build Status][Travis badge]][Travis link]
 [![Coverage Status][Coveralls badge]][Coveralls link]
-
-## Handlers
-
-Cowboy 1:
-
-```erlang
-...
-start() ->
-  prometheus_http_impl:setup(),
-  Routes = [
-            {'_', [
-                   {"/metrics/[:registry]", prometheus_cowboy1_handler, []},
-                   {"/", toppage_handler, []}
-                  ]}
-           ],
- ....
-```
-
-Cowboy 2:
-
-```erlang
-
-...
-start() ->
-  prometheus_http_impl:setup(),
-  Routes = [
-            {'_', [
-                   {"/metrics/[:registry]", prometheus_cowboy2_handler, []},
-                   {"/", toppage_handler, []}
-                  ]}
-           ],
- ....
-```
 
 ## Contributing
 
@@ -76,3 +43,13 @@ MIT
 [Travis link]: https://travis-ci.org/deadtrickster/prometheus_cowboy
 [Coveralls badge]: https://coveralls.io/repos/github/deadtrickster/prometheus_cowboy/badge.svg?branch=master
 [Coveralls link]: https://coveralls.io/github/deadtrickster/prometheus_cowboy?branch=master
+
+
+## Modules ##
+
+
+<table width="100%" border="0" summary="list of modules">
+<tr><td><a href="https://github.com/deadtrickster/prometheus-cowboy/blob/master/doc/prometheus_cowboy.md" class="module">prometheus_cowboy</a></td></tr>
+<tr><td><a href="https://github.com/deadtrickster/prometheus-cowboy/blob/master/doc/prometheus_cowboy1_handler.md" class="module">prometheus_cowboy1_handler</a></td></tr>
+<tr><td><a href="https://github.com/deadtrickster/prometheus-cowboy/blob/master/doc/prometheus_cowboy2_handler.md" class="module">prometheus_cowboy2_handler</a></td></tr></table>
+
