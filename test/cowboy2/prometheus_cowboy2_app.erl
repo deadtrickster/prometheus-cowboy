@@ -8,12 +8,13 @@
 start() ->
   prometheus_http_impl:setup(),
 
-  Dispatch = cowboy_router:compile([
-                                    {'_', [
-                                           {"/metrics/[:registry]", prometheus_cowboy2_handler, []},
-                                           {"/", toppage_handler, []}
-                                          ]}
-                                   ]),
+  Routes = [
+            {'_', [
+                   {"/metrics/[:registry]", prometheus_cowboy2_handler, []},
+                   {"/", toppage_handler, []}
+                  ]}
+           ],
+  Dispatch = cowboy_router:compile(Routes),
   {ok, _Listener} = cowboy:start_clear(http, [{port, 0}],
                                        #{env => #{dispatch => Dispatch}}),
   ranch:get_port(http).

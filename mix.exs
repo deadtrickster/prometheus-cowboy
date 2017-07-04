@@ -23,6 +23,6 @@ defmodule PrometheusCowboy.Mixfile do
   end
 
   defp deps do
-    []
+    [{:prometheus_httpd, "~> 2.1"}]
   end
 end
