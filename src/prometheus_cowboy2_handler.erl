@@ -8,7 +8,7 @@
         ]).
 
 %% ===================================================================
-%% API
+%% cowboy_handler callbacks
 %% ===================================================================
 
 init(Req, _Opts) ->
@@ -27,10 +27,10 @@ handle(Request) ->
   {ok, Request1, undefined}.
 
 gen_response(<<"GET">>, Request) ->
-  Registry0 = cowboy_req:binding(registry, Request, default),
+  Registry0 = cowboy_req:binding(registry, Request, <<"default">>),
   case prometheus_registry:exists(Registry0) of
     false ->
-      cowboy_req:reply(404, [], <<"Unknown Registry">>, Request);
+      cowboy_req:reply(404, #{}, <<"Unknown Registry">>, Request);
     Registry ->
       gen_metrics_response(Registry, Request)
   end;
@@ -50,4 +50,4 @@ gen_metrics_response(Registry, Request) ->
                                   standalone => false}),
 
   Headers = prometheus_cowboy:to_cowboy_headers(RespHeaders),
-  cowboy_req:reply(Code, Headers, Body, Request).
+  cowboy_req:reply(Code, maps:from_list(Headers), Body, Request).

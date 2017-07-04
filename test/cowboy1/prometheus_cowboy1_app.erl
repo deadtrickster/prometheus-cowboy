@@ -5,7 +5,9 @@
 -export([start/0]).
 %% API.
 
-start() ->
+start() ->  
+  prometheus_http_impl:setup(),
+  
   Dispatch = cowboy_router:compile([
                                     {'_', [
                                            {"/metrics/[:registry]", prometheus_cowboy1_handler, []},                                           

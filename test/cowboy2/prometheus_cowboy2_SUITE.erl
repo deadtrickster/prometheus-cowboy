@@ -1,4 +1,4 @@
--module(prometheus_cowboy1_SUITE).
+-module(prometheus_cowboy2_SUITE).
 -compile(export_all).
 -include_lib("common_test/include/ct.hrl").
 -include_lib("eunit/include/eunit.hrl").
@@ -93,7 +93,7 @@ groups() ->
 init_per_suite(Config) ->
   {ok, _} = application:ensure_all_started(cowboy),
   {ok, _} = application:ensure_all_started(prometheus),
-  Port = prometheus_cowboy1_app:start(),
+  Port = prometheus_cowboy2_app:start(),
   %% debugger:start(),
   %% timer:sleep(80000),
   [{port, Port} | Config].
