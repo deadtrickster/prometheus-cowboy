@@ -9,7 +9,6 @@ __Version:__ 0.0.2
 [![Hex.pm][Hex badge]][Hex link]
 [![Hex.pm Downloads][Hex downloads badge]][Hex link]
 [![Build Status][Travis badge]][Travis link]
-[![Coverage Status][Coveralls badge]][Coveralls link]
 
 ## Handlers
 
