@@ -11,6 +11,39 @@ __Version:__ 0.0.1
 [![Build Status][Travis badge]][Travis link]
 [![Coverage Status][Coveralls badge]][Coveralls link]
 
+## Handlers
+
+Cowboy 1:
+
+```erlang
+...
+start() ->
+  prometheus_http_impl:setup(),
+  Routes = [
+            {'_', [
+                   {"/metrics/[:registry]", prometheus_cowboy1_handler, []},
+                   {"/", toppage_handler, []}
+                  ]}
+           ],
+ ....
+```
+
+Cowboy 2:
+
+```erlang
+
+...
+start() ->
+  prometheus_http_impl:setup(),
+  Routes = [
+            {'_', [
+                   {"/metrics/[:registry]", prometheus_cowboy2_handler, []},
+                   {"/", toppage_handler, []}
+                  ]}
+           ],
+ ....
+```
+
 ## Contributing
 
 Section order:
