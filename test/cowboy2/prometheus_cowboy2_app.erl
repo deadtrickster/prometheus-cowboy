@@ -11,10 +11,12 @@ start() ->
   Routes = [
             {'_', [
                    {"/metrics/[:registry]", prometheus_cowboy2_handler, []},
-                   {"/", toppage_handler, []}
+                   {"/qwe", qwe_handler, []}
                   ]}
            ],
   Dispatch = cowboy_router:compile(Routes),
-  {ok, _Listener} = cowboy:start_clear(http, [{port, 0}],
-                                       #{env => #{dispatch => Dispatch}}),
-  ranch:get_port(http).
+  {ok, _} = cowboy:start_clear(http, [{port, 0}],
+                               #{env => #{dispatch => Dispatch},
+				 metrics_callback => fun prometheus_cowboy2_instrumenter:observe/1,
+                                 stream_handlers => [cowboy_metrics_h, cowboy_stream_h]}),
+  {ranch:get_port(http), http}.

@@ -1,4 +1,4 @@
--module(prometheus_cowboy2_SUITE).
+-module(prometheus_cowboy2_handler_SUITE).
 -compile(export_all).
 -include_lib("common_test/include/ct.hrl").
 -include_lib("eunit/include/eunit.hrl").
@@ -70,22 +70,22 @@ all() ->
 groups() ->
   [
    {positive, [sequential], [
-                             prometheus_cowboy1_negotiation,
-                             prometheus_cowboy1_negotiation_fail,
+                             prometheus_cowboy2_negotiation,
+                             prometheus_cowboy2_negotiation_fail,
 
-                             prometheus_cowboy1,
+                             prometheus_cowboy2,
 
-                             prometheus_cowboy1_registry,
-                             prometheus_cowboy1_registry_conflict,
+                             prometheus_cowboy2_registry,
+                             prometheus_cowboy2_registry_conflict,
 
-                             prometheus_cowboy1_auth_basic1,
-                             prometheus_cowboy1_auth_basic2,
-                             prometheus_cowboy1_auth_basic3,
+                             prometheus_cowboy2_auth_basic1,
+                             prometheus_cowboy2_auth_basic2,
+                             prometheus_cowboy2_auth_basic3,
 
-                             prometheus_cowboy1_auth_provider1,
-                             prometheus_cowboy1_auth_provider2,
+                             prometheus_cowboy2_auth_provider1,
+                             prometheus_cowboy2_auth_provider2,
 
-                             prometheus_cowboy1_auth_invalid
+                             prometheus_cowboy2_auth_invalid
                             ]}
   ].
 
@@ -93,10 +93,10 @@ groups() ->
 init_per_suite(Config) ->
   {ok, _} = application:ensure_all_started(cowboy),
   {ok, _} = application:ensure_all_started(prometheus),
-  Port = prometheus_cowboy2_app:start(),
+  {Port, Listener} = prometheus_cowboy2_app:start(),
   %% debugger:start(),
   %% timer:sleep(80000),
-  [{port, Port} | Config].
+  [{port, Port}, {listener, Listener} | Config].
 
 %% @doc Stop the application.
 end_per_suite(Config) ->
@@ -112,7 +112,7 @@ end_per_testcase(_, Config) ->
 %% TESTS
 %% ===================================================================
 
-prometheus_cowboy1_negotiation(Config) ->
+prometheus_cowboy2_negotiation(Config) ->
   {ok, TextResponse} =
     httpc:request(get, {?METRICS_URL,
                         [{"Accept-Encoding", "deflate"}]}, [], []),
@@ -152,7 +152,7 @@ prometheus_cowboy1_negotiation(Config) ->
   ?assert(iolist_size(body(ProtobufResponse)) > 0).
 
 
-prometheus_cowboy1_negotiation_fail(Config) ->
+prometheus_cowboy2_negotiation_fail(Config) ->
   {ok, IdentityResponse} =
     httpc:request(get, {?METRICS_URL,
                         [{"Accept-Encoding", "qwe"}]}, [], []),
@@ -177,7 +177,7 @@ prometheus_cowboy1_negotiation_fail(Config) ->
   ?assertMatch([{"content-length", "0"}|_],
                headers(CTResponse)).
 
-prometheus_cowboy1(Config) ->
+prometheus_cowboy2(Config) ->
   {ok, MetricsResponse} = httpc:request(?METRICS_URL),
   ?assertMatch(200, status(MetricsResponse)),
   MetricsCT = prometheus_text_format:content_type(),
@@ -197,7 +197,7 @@ prometheus_cowboy1(Config) ->
                when CL404 > 0,
                     headers(CTResponse)).
 
-prometheus_cowboy1_registry(Config) ->
+prometheus_cowboy2_registry(Config) ->
   prometheus_counter:new([{registry, qwe}, {name, qwe}, {help, ""}]),
   prometheus_counter:inc(qwe, qwe, [], 10),
 
@@ -221,7 +221,7 @@ prometheus_cowboy1_registry(Config) ->
                when CL404 > 0,
                     headers(IRResponse)).
 
-prometheus_cowboy1_registry_conflict(Config) ->
+prometheus_cowboy2_registry_conflict(Config) ->
   application:set_env(prometheus, prometheus_http,
                       [{registry, default}]),
 
@@ -231,40 +231,40 @@ prometheus_cowboy1_registry_conflict(Config) ->
   ?assertMatch(409, status(DeniedR1)).
 
 
-prometheus_cowboy1_auth_basic1(Config) ->
+prometheus_cowboy2_auth_basic1(Config) ->
   application:set_env(prometheus, prometheus_http, [{authorization,
                                                      {basic, "qwe", "qwa"}}]),
 
   ?AUTH_TESTS.
 
-prometheus_cowboy1_auth_basic2(Config) ->
+prometheus_cowboy2_auth_basic2(Config) ->
   application:set_env(prometheus, prometheus_http, [{authorization,
                                                      {basic, ?MODULE}}]),
 
   ?AUTH_TESTS.
 
-prometheus_cowboy1_auth_basic3(Config) ->
+prometheus_cowboy2_auth_basic3(Config) ->
   application:set_env(prometheus, prometheus_http,
                       [{authorization,
                         {basic, {?MODULE, authorize}}}]),
 
   ?AUTH_TESTS.
 
-prometheus_cowboy1_auth_provider1(Config) ->
+prometheus_cowboy2_auth_provider1(Config) ->
   application:set_env(prometheus, prometheus_http,
                       [{authorization,
                         {?MODULE, authorize}}]),
 
   ?AUTH_TESTS.
 
-prometheus_cowboy1_auth_provider2(Config) ->
+prometheus_cowboy2_auth_provider2(Config) ->
   application:set_env(prometheus, prometheus_http,
                       [{authorization,
                         ?MODULE}]),
 
   ?AUTH_TESTS.
 
-prometheus_cowboy1_auth_invalid(Config) ->
+prometheus_cowboy2_auth_invalid(Config) ->
   application:set_env(prometheus, prometheus_http,
                       [{authorization, "qwe"}]),
 
