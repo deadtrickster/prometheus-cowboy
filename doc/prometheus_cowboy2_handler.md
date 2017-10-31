@@ -1,8 +1,11 @@
 
 
 # Module prometheus_cowboy2_handler #
+* [Description](#description)
 * [Function Index](#index)
 * [Function Details](#functions)
+
+Cowboy2 handler for exporting prometheus metrics.
 
 <a name="index"></a>
 

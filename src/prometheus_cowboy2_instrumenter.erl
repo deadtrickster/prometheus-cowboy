@@ -1,3 +1,89 @@
+%% @doc
+%% Collects Cowboy metrics using
+%% <a href="https://github.com/ninenines/cowboy/blob/master/src/cowboy_metrics_h.erl">
+%%   metrics stream handler
+%% </a>.
+%%
+%% ==Exported metrics==
+%% <ul>
+%%   <li>
+%%     `cowboy_early_errors_total'<br/>
+%%     Type: counter.<br/>
+%%     Labels: default - `[]', configured via `early_errors_labels'.<br/>
+%%     Total number of Cowboy early errors, i.e. errors that occur before a request is received.
+%%   </li>
+%%   <li>
+%%     `cowboy_requests_total'<br/>
+%%     Type: counter.<br/>
+%%     Labels: default - `[method, reason, status_class]', configured via `request_labels'.<br/>
+%%     Total number of Cowboy requests.
+%%   </li>
+%%   <li>
+%%     `cowboy_spawned_processes_total'<br/>
+%%     Type: counter.<br/>
+%%     Labels: default - `[method, reason, status_class]', configured via `request_labels'.<br/>
+%%     Total number of spawned processes.
+%%   </li>
+%%   <li>
+%%     `cowboy_errors_total'<br/>
+%%     Type: counter.<br/>
+%%     Labels: default - `[method, reason, error]', configured via `error_labels'.<br/>
+%%     Total number of Cowboy request errors.
+%%   </li>
+%%   <li>
+%%     `cowboy_request_duration_seconds'<br/>
+%%     Type: histogram.<br/>
+%%     Labels: default - `[method, reason, status_class]', configured via `request_labels'.<br/>
+%%     Buckets: default - `[0.01, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4]', configured via `duration_buckets'.<br/>
+%%     Cowboy request duration.
+%%   </li>
+%%   <li>
+%%     `cowboy_receive_body_duration_seconds'<br/>
+%%     Type: histogram.<br/>
+%%     Labels: default - `[method, reason, status_class]', configured via `request_labels'.<br/>
+%%     Buckets: default - `[0.01, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4]', configured via `duration_buckets'.<br/>
+%%     Request body receiving duration.
+%%   </li>
+%% </ul>
+%%
+%% ==Configuration==
+%%
+%% Prometheus Cowboy2 instrumenter configured via `cowboy_instrumenter' key of `prometheus'
+%% app environment.
+%%
+%% Default configuration:
+%%
+%% <pre lang="erlang">
+%% {prometheus, [
+%%   ...
+%%   {cowboy_instrumenter, [{duration_buckets, [0.01, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4]},
+%%                          {early_error_labels,  []},
+%%                          {request_labels, [method, reason, status_class]},
+%%                          {error_labels, [method, reason, error]}]
+%%   ...
+%% ]}
+%% </pre>
+%%
+%% ==Labels==
+%%
+%% Builtin:
+%%  - host,
+%%  - port,
+%%  - method,
+%%  - status,
+%%  - status_class,
+%%  - reason,
+%%  - error.
+%%
+%% ===Custom labels===
+%% can be implemented via module exporting label_value/2 function.
+%% First argument will be label name, second is Metrics data from
+%% <a href="https://github.com/ninenines/cowboy/blob/master/src/cowboy_metrics_h.erl">
+%% metrics stream handler
+%% </a>.
+%% Set this module to `labels_module' configuration option.
+%%
+%% @end
 -module(prometheus_cowboy2_instrumenter).
 
 -export([setup_metrics/0]).
@@ -16,12 +102,20 @@
 %% ===================================================================
 
 -spec observe(map()) -> ok.
+%% @doc
+%% <a href="https://github.com/ninenines/cowboy/blob/master/src/cowboy_metrics_h.erl">
+%% Metrics stream handler
+%% </a> callback.
+%% @end
 observe(Metrics0=#{ref:=ListenerRef}) ->
   {Host, Port} = ranch:get_addr(ListenerRef),
   dispatch_metrics(Metrics0#{listener_host=>Host,
                              listener_port=>Port}),
   ok.
 
+%% @doc
+%% Sets all metrics up. Call this when the app starts.
+%% @end
 setup_metrics() ->
   prometheus_counter:declare([{name, cowboy_early_errors_total},
                               {labels, early_error_labels()},
@@ -35,7 +129,7 @@ setup_metrics() ->
                               {help, "Total number of spawned processes."}]),
   prometheus_counter:declare([{name, cowboy_errors_total},
                               {labels, error_labels()},
-                              {help, "Total number of Cowboy early errors."}]),
+                              {help, "Total number of Cowboy request errors."}]),
   prometheus_histogram:declare([{name, cowboy_request_duration_seconds},
                                 {labels, request_labels()},
                                 {buckets, duration_buckets()},

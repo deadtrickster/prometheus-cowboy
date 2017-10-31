@@ -32,8 +32,6 @@ init_per_suite(Config) ->
   {ok, _} = application:ensure_all_started(prometheus),
   cowboy:stop_listener(http),
   {Port, Listener} = prometheus_cowboy2_app:start(),
-  %% debugger:start(),
-  %% timer:sleep(80000),
   [{port, Port}, {listener, Listener} | Config].
 
 %% @doc Stop the application.

@@ -8,7 +8,7 @@
 [![Hex.pm Downloads][Hex downloads badge]][Hex link]
 [![Build Status][Travis badge]][Travis link]
 
-## Handlers
+## Exporting metrics with handlers
 
 Cowboy 1:
 
@@ -18,7 +18,7 @@ Routes = [
                  {"/metrics/[:registry]", prometheus_cowboy1_handler, []},
                  {"/", toppage_handler, []}
                 ]}
-         ],
+         ]
 </pre>
 
 Cowboy 2:
@@ -29,9 +29,17 @@ Routes = [
                  {"/metrics/[:registry]", prometheus_cowboy2_handler, []},
                  {"/", toppage_handler, []}
                 ]}
-         ],
+         ]
 </pre>
 
+## Exporting Cowboy2 metrics
+
+<pre lang="erlang">
+  {ok, _} = cowboy:start_clear(http, [{port, 0}],
+                               #{env => #{dispatch => Dispatch},
+                                 metrics_callback => fun prometheus_cowboy2_instrumenter:observe/1,
+                                 stream_handlers => [cowboy_metrics_h, cowboy_stream_h]})
+</pre>
 
 ## Contributing
 

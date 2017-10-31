@@ -1,3 +1,6 @@
+%% @doc
+%% Cowboy2 handler for exporting prometheus metrics.
+%% @end
 -module(prometheus_cowboy1_handler).
 
 %% -behaviour(cowboy_http_handler).

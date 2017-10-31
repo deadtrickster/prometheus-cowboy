@@ -10,7 +10,7 @@ __Version:__ 0.0.3
 [![Hex.pm Downloads][Hex downloads badge]][Hex link]
 [![Build Status][Travis badge]][Travis link]
 
-## Handlers
+## Exporting metrics with handlers
 
 Cowboy 1:
 
@@ -21,7 +21,7 @@ Routes = [
                  {"/metrics/[:registry]", prometheus_cowboy1_handler, []},
                  {"/", toppage_handler, []}
                 ]}
-         ],
+         ]
 
 ```
 
@@ -34,7 +34,18 @@ Routes = [
                  {"/metrics/[:registry]", prometheus_cowboy2_handler, []},
                  {"/", toppage_handler, []}
                 ]}
-         ],
+         ]
+
+```
+
+## Exporting Cowboy2 metrics
+
+```erlang
+
+  {ok, _} = cowboy:start_clear(http, [{port, 0}],
+                               #{env => #{dispatch => Dispatch},
+                                 metrics_callback => fun prometheus_cowboy2_instrumenter:observe/1,
+                                 stream_handlers => [cowboy_metrics_h, cowboy_stream_h]})
 
 ```
 
@@ -78,5 +89,6 @@ MIT
 <table width="100%" border="0" summary="list of modules">
 <tr><td><a href="https://github.com/deadtrickster/prometheus-cowboy/blob/master/doc/prometheus_cowboy.md" class="module">prometheus_cowboy</a></td></tr>
 <tr><td><a href="https://github.com/deadtrickster/prometheus-cowboy/blob/master/doc/prometheus_cowboy1_handler.md" class="module">prometheus_cowboy1_handler</a></td></tr>
-<tr><td><a href="https://github.com/deadtrickster/prometheus-cowboy/blob/master/doc/prometheus_cowboy2_handler.md" class="module">prometheus_cowboy2_handler</a></td></tr></table>
+<tr><td><a href="https://github.com/deadtrickster/prometheus-cowboy/blob/master/doc/prometheus_cowboy2_handler.md" class="module">prometheus_cowboy2_handler</a></td></tr>
+<tr><td><a href="https://github.com/deadtrickster/prometheus-cowboy/blob/master/doc/prometheus_cowboy2_instrumenter.md" class="module">prometheus_cowboy2_instrumenter</a></td></tr></table>
 
