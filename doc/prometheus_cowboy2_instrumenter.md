@@ -100,7 +100,7 @@ Set this module to `labels_module` configuration option.
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#observe-1">observe/1</a></td><td>
 <a href="https://github.com/ninenines/cowboy/blob/master/src/cowboy_metrics_h.erl">
 Metrics stream handler
-</a> callback.</td></tr><tr><td valign="top"><a href="#setup_metrics-0">setup_metrics/0</a></td><td>
+</a> callback.</td></tr><tr><td valign="top"><a href="#setup-0">setup/0</a></td><td>
 Sets all metrics up.</td></tr></table>
 
 
@@ -121,11 +121,11 @@ observe(Metrics0::#{}) -&gt; ok
 Metrics stream handler
 ](https://github.com/ninenines/cowboy/blob/master/src/cowboy_metrics_h.erl) callback.
 
-<a name="setup_metrics-0"></a>
+<a name="setup-0"></a>
 
-### setup_metrics/0 ###
+### setup/0 ###
 
-`setup_metrics() -> any()`
+`setup() -> any()`
 
 Sets all metrics up. Call this when the app starts.
 
