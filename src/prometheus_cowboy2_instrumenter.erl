@@ -86,7 +86,7 @@
 %% @end
 -module(prometheus_cowboy2_instrumenter).
 
--export([setup_metrics/0]).
+-export([setup/0]).
 -export([observe/1]).
 -define(DEFAULT_DURATION_BUCKETS, [0.01, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4]).
 -define(DEFAULT_EARLY_ERROR_LABELS, []).
@@ -116,7 +116,7 @@ observe(Metrics0=#{ref:=ListenerRef}) ->
 %% @doc
 %% Sets all metrics up. Call this when the app starts.
 %% @end
-setup_metrics() ->
+setup() ->
   prometheus_counter:declare([{name, cowboy_early_errors_total},
                               {labels, early_error_labels()},
                               {help, "Total number of Cowboy early errors."}]),

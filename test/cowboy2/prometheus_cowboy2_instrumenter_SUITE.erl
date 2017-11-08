@@ -52,7 +52,7 @@ init_per_testcase(custom_labels_module, Config) ->
                                                         {early_error_labels, [qwe]}]),
   init_per_testcase(qqq, Config);
 init_per_testcase(_, Config) ->
-  prometheus_cowboy2_instrumenter:setup_metrics(),
+  prometheus_cowboy2_instrumenter:setup(),
   Config.
 
 end_per_testcase(_, Config) ->

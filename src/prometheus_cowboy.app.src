@@ -9,6 +9,7 @@
    ]},
   {env,[]},
   {modules, []},
+  {mod, {prometheus_cowboy, []}},
 
   {maintainers, ["Ilya Khaprov"]},
   {licenses, ["MIT"]},
