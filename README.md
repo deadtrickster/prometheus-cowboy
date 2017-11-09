@@ -4,7 +4,7 @@
 
 Copyright (c) 2017 Ilya Khaprov <<i.khaprov@gmail.com>>.
 
-__Version:__ 0.1.1
+__Version:__ 0.1.2
 
 [![Hex.pm][Hex badge]][Hex link]
 [![Hex.pm Downloads][Hex downloads badge]][Hex link]
