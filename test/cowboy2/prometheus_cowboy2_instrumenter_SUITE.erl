@@ -74,6 +74,9 @@ metrics_setup(_Config) ->
   ?assertMatch(false, prometheus_counter:declare([{name, cowboy_early_errors_total},
                                                   {labels, [method]},
                                                   {help, ""}])),
+  ?assertMatch(false, prometheus_counter:declare([{name, cowboy_protocol_upgrades_total},
+                                                  {labels, [method]},
+                                                  {help, ""}])),
   %% each observe call means new request
   ?assertMatch(false, prometheus_counter:declare([{name, cowboy_requests_total},
                                                   {labels, [method]},
@@ -96,10 +99,12 @@ metrics_setup(_Config) ->
 prometheus_cowboy2_instrumenter(Config) ->
   Listener = ?config(listener, Config),
   prometheus_cowboy2_instrumenter:observe(#{early_time_error=>1, ref=>Listener}),
+  prometheus_cowboy2_instrumenter:observe(generate_metrics(switch_protocol, 3, Listener)),
   prometheus_cowboy2_instrumenter:observe(generate_metrics(normal, 3, Listener)),
   prometheus_cowboy2_instrumenter:observe(generate_metrics({connection_error, protocol_error, ""}, 5, Listener)),
 
   ?assertMatch(1, prometheus_counter:value(cowboy_early_errors_total)),
+  ?assertMatch(1, prometheus_counter:value(cowboy_protocol_upgrades_total)),
 
   ?assertMatch(1, prometheus_counter:value(cowboy_requests_total, [<<"POST">>, normal, "client-error"])),
   ?assertMatch({[0,0,0,0,0,1,0,0,0,0],1.0}, prometheus_histogram:value(cowboy_request_duration_seconds, [<<"POST">>, normal, "client-error"])),

@@ -13,6 +13,12 @@
 %%     Total number of Cowboy early errors, i.e. errors that occur before a request is received.
 %%   </li>
 %%   <li>
+%%     `cowboy_protocol_upgrades_total'<br/>
+%%     Type: counter.<br/>
+%%     Labels: default - `[]', configured via `protocol_upgrades_labels'.<br/>
+%%     Total number of protocol upgrades, i.e. when http connection upgraded to websocket connection.
+%%   </li>
+%%   <li>
 %%     `cowboy_requests_total'<br/>
 %%     Type: counter.<br/>
 %%     Labels: default - `[method, reason, status_class]', configured via `request_labels'.<br/>
@@ -90,10 +96,12 @@
 -export([observe/1]).
 -define(DEFAULT_DURATION_BUCKETS, [0.01, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4]).
 -define(DEFAULT_EARLY_ERROR_LABELS, []).
+-define(DEFAULT_PROTOCOL_UPGRADE_LABELS, []).
 -define(DEFAULT_REQUEST_LABELS, [method, reason, status_class]).
 -define(DEFAULT_ERROR_LABELS, [method, reason, error]).
 -define(DEFAULT_CONFIG, [{duration_buckets, ?DEFAULT_DURATION_BUCKETS},
                          {early_error_labels,  ?DEFAULT_EARLY_ERROR_LABELS},
+                         {protocol_upgrade_labels, ?DEFAULT_PROTOCOL_UPGRADE_LABELS},
                          {request_labels, ?DEFAULT_REQUEST_LABELS},
                          {error_labels, ?DEFAULT_ERROR_LABELS}]).
 
@@ -120,6 +128,9 @@ setup() ->
   prometheus_counter:declare([{name, cowboy_early_errors_total},
                               {labels, early_error_labels()},
                               {help, "Total number of Cowboy early errors."}]),
+  prometheus_counter:declare([{name, cowboy_protocol_upgrades_total},
+                              {labels, protocol_upgrade_labels()},
+                              {help, "Total number of protocol upgrades."}]),
   %% each observe call means new request
   prometheus_counter:declare([{name, cowboy_requests_total},
                               {labels, request_labels()},
@@ -147,6 +158,9 @@ setup() ->
 
 dispatch_metrics(#{early_time_error := _}=Metrics) ->
   prometheus_counter:inc(cowboy_early_errors_total, early_error_labels(Metrics));
+dispatch_metrics(#{reason := switch_protocol}=Metrics) ->
+  prometheus_counter:inc(cowboy_protocol_upgrades_total, 
+                         protocol_upgrade_labels(Metrics));
 dispatch_metrics(#{req_start := ReqStart,
                    req_end := ReqEnd,
                    req_body_start := ReqBodyStart,
@@ -178,6 +192,9 @@ dispatch_metrics(#{req_start := ReqStart,
 
 early_error_labels(Metrics) ->
   compute_labels(early_error_labels(), Metrics).
+
+protocol_upgrade_labels(Metrics) ->
+  compute_labels(protocol_upgrade_labels(), Metrics).
 
 request_labels(Metrics) ->
   compute_labels(request_labels(), Metrics).
@@ -228,6 +245,9 @@ duration_buckets() ->
 
 early_error_labels() ->
   get_config_value(early_error_labels, ?DEFAULT_EARLY_ERROR_LABELS).
+
+protocol_upgrade_labels() ->
+  get_config_value(protocol_upgrade_labels, ?DEFAULT_PROTOCOL_UPGRADE_LABELS).
 
 request_labels() ->
   get_config_value(request_labels, ?DEFAULT_REQUEST_LABELS).

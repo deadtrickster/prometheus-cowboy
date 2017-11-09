@@ -23,6 +23,11 @@ Type: counter.<br />
 Labels: default - `[]`, configured via `early_errors_labels`.<br />
 Total number of Cowboy early errors, i.e. errors that occur before a request is received.
 
+* `cowboy_protocol_upgrades_total`<br />
+Type: counter.<br />
+Labels: default - `[]`, configured via `protocol_upgrades_labels`.<br />
+Total number of protocol upgrades, i.e. when http connection upgraded to websocket connection.
+
 * `cowboy_requests_total`<br />
 Type: counter.<br />
 Labels: default - `[method, reason, status_class]`, configured via `request_labels`.<br />
