@@ -1,6 +1,6 @@
 @copyright 2017 Ilya Khaprov <<i.khaprov@gmail.com>>.
 @title prometheus_cowboy
-@version 0.1.2
+@version 0.1.3
 
 @doc
 
