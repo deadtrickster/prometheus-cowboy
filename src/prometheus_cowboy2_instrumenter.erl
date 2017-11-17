@@ -213,6 +213,8 @@ label_value(method, #{req:=Req}) ->
   cowboy_req:method(Req);
 label_value(status, #{resp_status:=Status}) ->
   Status;
+label_value(status_class, #{resp_status:=undefined}) ->
+  undefined;
 label_value(status_class, #{resp_status:=Status}) ->
   prometheus_http:status_class(Status);
 label_value(reason, #{reason:=Reason}) ->
