@@ -22,6 +22,7 @@ groups() ->
                              metrics_setup,
                              prometheus_cowboy2_instrumenter,
                              custom_labels_module,
+                             custom_registry,
                              real_handler
                             ]}
   ].
@@ -50,6 +51,9 @@ init_per_testcase(metrics_setup, Config) ->
 init_per_testcase(custom_labels_module, Config) ->
   application:set_env(prometheus, cowboy_instrumenter, [{labels_module, ?MODULE},
                                                         {early_error_labels, [qwe]}]),
+  init_per_testcase(qqq, Config);
+init_per_testcase(custom_registry, Config) ->
+  application:set_env(prometheus, cowboy_instrumenter, [{registry, qwe}]),
   init_per_testcase(qqq, Config);
 init_per_testcase(_, Config) ->
   prometheus_cowboy2_instrumenter:setup(),
@@ -124,6 +128,11 @@ custom_labels_module(Config) ->
   Listener = ?config(listener, Config),
   prometheus_cowboy2_instrumenter:observe(#{early_time_error=>1, ref=>Listener}),
   ?assertMatch(1, prometheus_counter:value(cowboy_early_errors_total, ["qwe"])).
+
+custom_registry(Config) ->
+  Listener = ?config(listener, Config),
+  prometheus_cowboy2_instrumenter:observe(#{early_time_error=>1, ref=>Listener}),
+  ?assertMatch(1, prometheus_counter:value(qwe, cowboy_early_errors_total, [])).
 
 real_handler(Config) ->
   {ok, _} =

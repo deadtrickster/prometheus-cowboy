@@ -65,7 +65,8 @@
 %%   {cowboy_instrumenter, [{duration_buckets, [0.01, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4]},
 %%                          {early_error_labels,  []},
 %%                          {request_labels, [method, reason, status_class]},
-%%                          {error_labels, [method, reason, error]}]
+%%                          {error_labels, [method, reason, error]},
+%%                          {registry, default}]}
 %%   ...
 %% ]}
 %% </pre>
@@ -94,16 +95,25 @@
 
 -export([setup/0]).
 -export([observe/1]).
+
+-compile({inline, [inc/2,
+                   inc/3,
+                   observe/3]}).
+
 -define(DEFAULT_DURATION_BUCKETS, [0.01, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4]).
 -define(DEFAULT_EARLY_ERROR_LABELS, []).
 -define(DEFAULT_PROTOCOL_UPGRADE_LABELS, []).
 -define(DEFAULT_REQUEST_LABELS, [method, reason, status_class]).
 -define(DEFAULT_ERROR_LABELS, [method, reason, error]).
+-define(DEFAULT_LABELS_MODULE, undefined).
+-define(DEFAULT_REGISTRY, default).
 -define(DEFAULT_CONFIG, [{duration_buckets, ?DEFAULT_DURATION_BUCKETS},
                          {early_error_labels,  ?DEFAULT_EARLY_ERROR_LABELS},
                          {protocol_upgrade_labels, ?DEFAULT_PROTOCOL_UPGRADE_LABELS},
                          {request_labels, ?DEFAULT_REQUEST_LABELS},
-                         {error_labels, ?DEFAULT_ERROR_LABELS}]).
+                         {error_labels, ?DEFAULT_ERROR_LABELS},
+                         {lables_module, ?DEFAULT_LABELS_MODULE},
+                         {registry, ?DEFAULT_REGISTRY}]).
 
 %% ===================================================================
 %% API
@@ -126,26 +136,33 @@ observe(Metrics0=#{ref:=ListenerRef}) ->
 %% @end
 setup() ->
   prometheus_counter:declare([{name, cowboy_early_errors_total},
+                              {registry, registry()},
                               {labels, early_error_labels()},
                               {help, "Total number of Cowboy early errors."}]),
   prometheus_counter:declare([{name, cowboy_protocol_upgrades_total},
+                              {registry, registry()},
                               {labels, protocol_upgrade_labels()},
                               {help, "Total number of protocol upgrades."}]),
   %% each observe call means new request
   prometheus_counter:declare([{name, cowboy_requests_total},
+                              {registry, registry()},
                               {labels, request_labels()},
                               {help, "Total number of Cowboy requests."}]),
   prometheus_counter:declare([{name, cowboy_spawned_processes_total},
+                              {registry, registry()},
                               {labels, request_labels()},
                               {help, "Total number of spawned processes."}]),
   prometheus_counter:declare([{name, cowboy_errors_total},
+                              {registry, registry()},
                               {labels, error_labels()},
                               {help, "Total number of Cowboy request errors."}]),
   prometheus_histogram:declare([{name, cowboy_request_duration_seconds},
+                                {registry, registry()},
                                 {labels, request_labels()},
                                 {buckets, duration_buckets()},
                                 {help, "Cowboy request duration."}]),
   prometheus_histogram:declare([{name, cowboy_receive_body_duration_seconds},
+                                {registry, registry()},
                                 {labels, request_labels()},
                                 {buckets, duration_buckets()},
                                 {help, "Request body receiving duration."}]),
@@ -157,10 +174,9 @@ setup() ->
 %% ===================================================================
 
 dispatch_metrics(#{early_time_error := _}=Metrics) ->
-  prometheus_counter:inc(cowboy_early_errors_total, early_error_labels(Metrics));
+  inc(cowboy_early_errors_total, early_error_labels(Metrics));
 dispatch_metrics(#{reason := switch_protocol}=Metrics) ->
-  prometheus_counter:inc(cowboy_protocol_upgrades_total, 
-                         protocol_upgrade_labels(Metrics));
+  inc(cowboy_protocol_upgrades_total, protocol_upgrade_labels(Metrics));
 dispatch_metrics(#{req_start := ReqStart,
                    req_end := ReqEnd,
                    req_body_start := ReqBodyStart,
@@ -168,14 +184,13 @@ dispatch_metrics(#{req_start := ReqStart,
                    reason := Reason,
                    procs := Procs}=Metrics) ->
   RequestLabels = request_labels(Metrics),
-  prometheus_counter:inc(cowboy_requests_total, RequestLabels),
-  prometheus_counter:inc(cowboy_spawned_processes_total, RequestLabels, maps:size(Procs)),
-  prometheus_histogram:observe(cowboy_request_duration_seconds, RequestLabels,
-                               ReqEnd - ReqStart),
+  inc(cowboy_requests_total, RequestLabels),
+  inc(cowboy_spawned_processes_total, RequestLabels, maps:size(Procs)),
+  observe(cowboy_request_duration_seconds, RequestLabels, ReqEnd - ReqStart),
   case ReqBodyEnd of
     undefined -> ok;
-    _ -> prometheus_histogram:observe(cowboy_receive_body_duration_seconds, RequestLabels,
-                                      ReqBodyEnd - ReqBodyStart)
+    _ -> observe(cowboy_receive_body_duration_seconds, RequestLabels,
+                 ReqBodyEnd - ReqBodyStart)
   end,
 
   case Reason of
@@ -187,8 +202,19 @@ dispatch_metrics(#{req_start := ReqStart,
       ok;
     _ ->
       ErrorLabels = error_labels(Metrics),
-      prometheus_counter:inc(cowboy_errors_total, ErrorLabels)
+      inc(cowboy_errors_total, ErrorLabels)
   end.
+
+inc(Name, Labels) ->
+  prometheus_counter:inc(registry(), Name, Labels, 1).
+
+inc(Name, Labels, Value) ->
+  prometheus_counter:inc(registry(), Name, Labels, Value).
+
+observe(Name, Labels, Value) ->
+  prometheus_histogram:observe(registry(), Name, Labels, Value).
+
+%% labels
 
 early_error_labels(Metrics) ->
   compute_labels(early_error_labels(), Metrics).
@@ -236,6 +262,8 @@ label_value(Label, Metrics) ->
     Module -> Module:label_value(Label, Metrics)
   end.
 
+%% configuration
+
 config() ->
   application:get_env(prometheus, cowboy_instrumenter, ?DEFAULT_CONFIG).
 
@@ -258,4 +286,7 @@ error_labels() ->
   get_config_value(error_labels, ?DEFAULT_ERROR_LABELS).
 
 labels_module() ->
-  get_config_value(labels_module, undefined).
+  get_config_value(labels_module, ?DEFAULT_LABELS_MODULE).
+
+registry() ->
+  get_config_value(registry, ?DEFAULT_REGISTRY).
