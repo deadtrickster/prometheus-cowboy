@@ -71,7 +71,8 @@ Default configuration:
     {cowboy_instrumenter, [{duration_buckets, [0.01, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4]},
                            {early_error_labels,  []},
                            {request_labels, [method, reason, status_class]},
-                           {error_labels, [method, reason, error]}]
+                           {error_labels, [method, reason, error]},
+                           {registry, default}]}
     ...
   ]}
 ```
