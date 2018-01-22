@@ -18,7 +18,7 @@ defmodule PrometheusCowboy.Mixfile do
   defp package do
     [maintainers: ["Ilya Khaprov"],
      licenses: ["MIT"],
-     links: %{"GitHub" => "https://github.com/deadtrickster/prometheus_cowboy"},
+     links: %{"GitHub" => "https://github.com/deadtrickster/prometheus-cowboy"},
      files: ["src", "lib", "README.md", "rebar.config"]]
   end
 
