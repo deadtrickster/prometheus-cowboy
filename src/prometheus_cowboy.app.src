@@ -1,6 +1,6 @@
 {application, prometheus_cowboy,
  [{description, ""},
-  {vsn, "0.1.4"},
+  {vsn, "0.1.5"},
   {registered, []},
   {applications,
    [kernel,

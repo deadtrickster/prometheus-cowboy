@@ -119,7 +119,7 @@ Sets all metrics up.</td></tr></table>
 ### observe/1 ###
 
 <pre><code>
-observe(Metrics0::#{}) -&gt; ok
+observe(Metrics0::map()) -&gt; ok
 </code></pre>
 <br />
 
