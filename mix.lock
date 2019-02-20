@@ -1,3 +1,5 @@
-%{"accept": {:hex, :accept, "0.3.3", "548ebb6fb2e8b0d170e75bb6123aea6ceecb0189bb1231eeadf52eac08384a97", [:rebar3], []},
-  "prometheus": {:hex, :prometheus, "3.3.1", "bc680e9d7aa53cbc1b554093968718d25ba264cd936840b24278e1cb77b97225", [:mix, :rebar3], []},
-  "prometheus_httpd": {:hex, :prometheus_httpd, "2.1.2", "f60afb22501c7af6c5ac882d13d851ac11c2073a10fb619bd5fea6cc8536a4a2", [:rebar3], [{:accept, "~> 0.3.3", [hex: :accept, optional: false]}, {:prometheus, "~> 3.2", [hex: :prometheus, optional: false]}]}}
+%{
+  "accept": {:hex, :accept, "0.3.4", "e3a25cbb1f6b51ee5f23d854b72f5a6fc97b42fe7e9fd8290daa334d59311c64", [:rebar3], [], "hexpm"},
+  "prometheus": {:hex, :prometheus, "4.2.2", "a830e77b79dc6d28183f4db050a7cac926a6c58f1872f9ef94a35cd989aceef8", [:mix, :rebar3], [], "hexpm"},
+  "prometheus_httpd": {:hex, :prometheus_httpd, "2.1.10", "ac8b24104637650f374c075fcf0eed704a4a0a6a56f2d14d27c37670195ea93a", [:rebar3], [{:accept, "~> 0.3", [hex: :accept, repo: "hexpm", optional: false]}, {:prometheus, "~> 3.5 or ~> 4.2", [hex: :prometheus, repo: "hexpm", optional: false]}], "hexpm"},
+}
