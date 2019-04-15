@@ -237,8 +237,10 @@ label_value(port, #{listener_port:=Port}) ->
   Port;
 label_value(method, #{req:=Req}) ->
   cowboy_req:method(Req);
-label_value(status, #{resp_status:=Status}) ->
+label_value(status, #{resp_status:=Status}) when is_integer(Status) ->
   Status;
+label_value(status, #{resp_status:=Status}) when is_binary(Status) ->
+  undefined;
 label_value(status_class, #{resp_status:=undefined}) ->
   undefined;
 label_value(status_class, #{resp_status:=Status}) ->
