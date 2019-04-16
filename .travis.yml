@@ -10,5 +10,6 @@ cache:
   - $HOME/.cache/rebar3/
 otp_release:
 - 19.0
-- 18.0
+- 20.1
+- 21.0
 script: "./bin/checks.sh"
