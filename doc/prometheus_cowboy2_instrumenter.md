@@ -21,46 +21,55 @@ metrics stream handler
 * `cowboy_early_errors_total`<br />
 Type: counter.<br />
 Labels: default - `[]`, configured via `early_errors_labels`.<br />
-Total number of Cowboy early errors, i.e. errors that occur before a request is received.
+Total number of Cowboy early errors, i.e. errors that occur before a request
+is received.
 
 * `cowboy_protocol_upgrades_total`<br />
 Type: counter.<br />
 Labels: default - `[]`, configured via `protocol_upgrades_labels`.<br />
-Total number of protocol upgrades, i.e. when http connection upgraded to websocket connection.
+Total number of protocol upgrades, i.e. when http connection upgraded to
+websocket connection.
 
 * `cowboy_requests_total`<br />
 Type: counter.<br />
-Labels: default - `[method, reason, status_class]`, configured via `request_labels`.<br />
+Labels: default - `[method, reason, status_class]`, configured
+via `request_labels`.<br />
 Total number of Cowboy requests.
 
 * `cowboy_spawned_processes_total`<br />
 Type: counter.<br />
-Labels: default - `[method, reason, status_class]`, configured via `request_labels`.<br />
+Labels: default - `[method, reason, status_class]`, configured
+via `request_labels`.<br />
 Total number of spawned processes.
 
 * `cowboy_errors_total`<br />
 Type: counter.<br />
-Labels: default - `[method, reason, error]`, configured via `error_labels`.<br />
+Labels: default - `[method, reason, error]`, configured
+via `error_labels`.<br />
 Total number of Cowboy request errors.
 
 * `cowboy_request_duration_seconds`<br />
 Type: histogram.<br />
-Labels: default - `[method, reason, status_class]`, configured via `request_labels`.<br />
-Buckets: default - `[0.01, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4]`, configured via `duration_buckets`.<br />
+Labels: default - `[method, reason, status_class]`, configured
+via `request_labels`.<br />
+Buckets: default - `[0.01, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4]`, configured
+via `duration_buckets`.<br />
 Cowboy request duration.
 
 * `cowboy_receive_body_duration_seconds`<br />
 Type: histogram.<br />
-Labels: default - `[method, reason, status_class]`, configured via `request_labels`.<br />
-Buckets: default - `[0.01, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4]`, configured via `duration_buckets`.<br />
+Labels: default - `[method, reason, status_class]`, configured
+via `request_labels`.<br />
+Buckets: default - `[0.01, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4]`, configured
+via `duration_buckets`.<br />
 Request body receiving duration.
 
 
 
 ### <a name="Configuration">Configuration</a> ###
 
-Prometheus Cowboy2 instrumenter configured via `cowboy_instrumenter` key of `prometheus`
-app environment.
+Prometheus Cowboy2 instrumenter configured via `cowboy_instrumenter`
+key of `prometheus` app environment.
 
 Default configuration:
 
@@ -68,7 +77,8 @@ Default configuration:
 
   {prometheus, [
     ...
-    {cowboy_instrumenter, [{duration_buckets, [0.01, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 4]},
+    {cowboy_instrumenter, [{duration_buckets, [0.01, 0.1, 0.25, 0.5,
+                                               0.75, 1, 1.5, 2, 4]},
                            {early_error_labels,  []},
                            {request_labels, [method, reason, status_class]},
                            {error_labels, [method, reason, error]},
