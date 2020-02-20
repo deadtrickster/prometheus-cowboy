@@ -102,7 +102,7 @@ metrics_setup(_Config) ->
 
 prometheus_cowboy2_instrumenter(Config) ->
   Listener = ?config(listener, Config),
-  prometheus_cowboy2_instrumenter:observe(#{early_time_error=>1, ref=>Listener}),
+  prometheus_cowboy2_instrumenter:observe(#{early_error_time => 1, ref => Listener}),
   prometheus_cowboy2_instrumenter:observe(generate_metrics(switch_protocol, 3, Listener)),
   prometheus_cowboy2_instrumenter:observe(generate_metrics(normal, 3, Listener)),
   prometheus_cowboy2_instrumenter:observe(generate_metrics({connection_error, protocol_error, ""}, 5, Listener)),
@@ -126,12 +126,12 @@ prometheus_cowboy2_instrumenter(Config) ->
 
 custom_labels_module(Config) ->
   Listener = ?config(listener, Config),
-  prometheus_cowboy2_instrumenter:observe(#{early_time_error=>1, ref=>Listener}),
+  prometheus_cowboy2_instrumenter:observe(#{early_error_time => 1, ref => Listener}),
   ?assertMatch(1, prometheus_counter:value(cowboy_early_errors_total, ["qwe"])).
 
 custom_registry(Config) ->
   Listener = ?config(listener, Config),
-  prometheus_cowboy2_instrumenter:observe(#{early_time_error=>1, ref=>Listener}),
+  prometheus_cowboy2_instrumenter:observe(#{early_error_time => 1, ref => Listener}),
   ?assertMatch(1, prometheus_counter:value(qwe, cowboy_early_errors_total, [])).
 
 real_handler(Config) ->
